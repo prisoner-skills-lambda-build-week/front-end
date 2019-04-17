@@ -21,7 +21,12 @@ export default class Register extends Component {
         username,
         password,
       })
-      .then(({ data: { token } }) => localStorage.setItem(`token`, token))
+      .then(({ data: { token, prison: { id } } }) => {
+        localStorage.setItem(`token`, token)
+        localStorage.setItem(`username`, username)
+        localStorage.setItem(`prison_id`, id)
+        this.props.history.push(`/prison/${id}`)
+      })
       .catch(err => console.error(err.response))
 
     this.setState({
@@ -37,23 +42,53 @@ export default class Register extends Component {
   render() {
     const { username, password } = this.state
     return (
-      <form onSubmit={this.handleLogin}>
-        <input
-          name='username'
-          type='text'
-          placeholder='username'
-          value={username}
-          onChange={this.handleChange}
-        />
-        <input
-          name='password'
-          type='password'
-          placeholder='password'
-          value={password}
-          onChange={this.handleChange}
-        />
-        <button type='submit'>Login</button>
-      </form>
+      <section className='section container'>
+        <form onSubmit={this.handleLogin}>
+          <div className='field'>
+            <p className='control has-icons-left has-icons-right'>
+              <input
+                className='input'
+                name='username'
+                type='text'
+                placeholder='username'
+                value={username}
+                onChange={this.handleChange}
+              />
+
+              <span className='icon is-small is-left'>
+                <i className='fas fa-envelope' />
+              </span>
+              <span className='icon is-small is-right'>
+                <i className='fas fa-check' />
+              </span>
+            </p>
+          </div>
+          <div className='field'>
+            <p className='control has-icons-left'>
+              <input
+                className='input'
+                name='password'
+                type='password'
+                placeholder='password'
+                value={password}
+                onChange={this.handleChange}
+              />
+
+              <span className='icon is-small is-left'>
+                <i className='fas fa-lock' />
+              </span>
+            </p>
+          </div>
+
+          <div className='field '>
+            <div className='control'>
+              <button type='submit' className='button is-link'>
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
     )
   }
 }

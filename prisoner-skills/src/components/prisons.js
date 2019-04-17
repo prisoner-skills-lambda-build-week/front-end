@@ -3,21 +3,17 @@ import axios from 'axios'
 import { API } from '../data'
 import { Link } from 'react-router-dom'
 
-const Card = ({ id, name, address }) => (
-  <div className='card'>
+const Card = ({ id, name, username, address }) => (
+  <div className='card' style={{ margin: `1rem 0` }}>
     <div className='card-content'>
       <p className='title'>{name}</p>
       <p className='subtitle'>{address}</p>
+      <p className='subtitle'>{username}</p>
     </div>
     <footer className='card-footer'>
       <p className='card-footer-item'>
         <span>
-          <Link to={`/prisons/${id}`}>View Prisoners</Link>
-        </span>
-      </p>
-      <p className='card-footer-item'>
-        <span>
-          Share on <a href='#'>Facebook</a>
+          <Link to={`/prison/${id}`}>View Prisoners</Link>
         </span>
       </p>
     </footer>
@@ -26,20 +22,20 @@ const Card = ({ id, name, address }) => (
 
 export default class Prisons extends Component {
   state = {
+    prison_id: this.props.match.params.prison_id,
     prisons: [],
   }
 
   componentDidMount() {
-    axios
-      .get(`${API}/prisons`)
-      .then(({ data }) => this.setState({ prisons: data }))
+    axios.get(`${API}/prisons`).then(({ data }) => {
+      this.setState({ prisons: data })
+    })
   }
 
   render() {
     const { prisons } = this.state
     return (
       <div>
-        {JSON.stringify(prisons)}
         {prisons.map(pris => (
           <Card key={pris.id} {...pris} />
         ))}

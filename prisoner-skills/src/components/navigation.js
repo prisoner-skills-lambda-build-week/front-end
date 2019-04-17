@@ -1,11 +1,9 @@
-import React from 'react'
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-
-const Navbar = styled.header`
-  display: flex;
-  justify-content: space-between;
-`
+import { GUEST } from '../data'
 
 const navLinks = [
   { name: `Home`, path: `/` },
@@ -13,68 +11,84 @@ const navLinks = [
   { name: `Prisons`, path: `/Prisons` },
 ]
 
-const Navigation = ({ links }) => (
-  <nav className='navbar' role='navigation' aria-label='main navigation'>
-    <div className='navbar-brand'>
-      <a className='navbar-item' href='https://bulma.io'>
-        <img
-          src='https://bulma.io/images/bulma-logo.png'
-          width='112'
-          height='28'
-          alt='logo'
-        />
-      </a>
+const clearStorage = () => {
+  localStorage.clear()
+}
 
-      <a
-        role='button'
-        className='navbar-burger burger'
-        aria-label='menu'
-        aria-expanded='false'
-        data-target='navbarBasicExample'>
-        <span aria-hidden='true' />
-        <span aria-hidden='true' />
-        <span aria-hidden='true' />
-      </a>
-    </div>
+export default class Navigation extends Component {
+  state = {
+    isNavOpen: false,
+  }
 
-    <div id='navbarBasicExample' className='navbar-menu'>
-      <div className='navbar-start'>
-        <Link to='/' className='navbar-item'>
-          Home
-        </Link>
-        <Link to='/prisons' className='navbar-item'>
-          Prisons
-        </Link>
+  toggleNav = () => {
+    this.setState({ isNavOpen: !this.state.isNavOpen })
+  }
 
-        <a className='navbar-item'>Documentation</a>
+  render() {
+    return (
+      <nav className='navbar' role='navigation' aria-label='main navigation'>
+        <div className='navbar-brand'>
+          <Link to='/' className='navbar-item'>
+            Home
+          </Link>
 
-        <div className='navbar-item has-dropdown is-hoverable'>
-          <a className='navbar-link'>More</a>
+          <span
+            onClick={this.toggleNav}
+            role='button'
+            className='navbar-burger burger'
+            aria-label='menu'
+            aria-expanded='false'
+            data-target='navbarBasicExample'>
+            <span aria-hidden='true' />
+            <span aria-hidden='true' />
+            <span aria-hidden='true' />
+          </span>
+        </div>
 
-          <div className='navbar-dropdown'>
-            <a className='navbar-item'>About</a>
-            <a className='navbar-item'>Jobs</a>
-            <a className='navbar-item'>Contact</a>
-            <hr className='navbar-divider' />
-            <a className='navbar-item'>Report an issue</a>
+        <div
+          id='navbarBasicExample'
+          className={`navbar-menu ${
+            this.state.isNavOpen ? `is-active` : null
+            }`}>
+          <div className='navbar-start'>
+            {GUEST ? <Link className='navbar-item' to='/prisons'>Prisons</Link> : <Link
+              to={`/prison/${localStorage.getItem(`prison_id`)}`}
+              className='navbar-item'>
+              Profile
+            </Link>}
+          </div>
+
+          <div className='navbar-end'>
+            <div className='navbar-item'>
+              <div className='buttons'>
+                {GUEST ? (
+                  <>
+                    <Link
+                      to='/signup'
+                      className='button is-primary'
+                      onClick={this.toggleNav}>
+                      <strong>Sign up</strong>
+                    </Link>
+                    <Link
+                      to='/login'
+                      className='button is-light'
+                      onClick={this.toggleNav}>
+                      Log in
+                    </Link>
+                  </>
+                ) : (
+                    <Link
+                      to='/'
+                      className='button is-danger'
+                      onClick={() => localStorage.clear()}>
+                      Sign Out
+                  </Link>
+                  )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className='navbar-end'>
-        <div className='navbar-item'>
-          <div className='buttons'>
-            <Link className='button is-primary' to='/signup'>
-              <strong>Sign up</strong>
-            </Link>
-            <Link to='/login' className='button is-light'>
-              Log in
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-)
-
-export default Navigation
+      </nav>
+    )
+  }
+}
