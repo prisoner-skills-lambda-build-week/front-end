@@ -7,30 +7,25 @@ export default class Register extends Component {
     super(props)
     this.state = {
       username: ``,
-      address: ``,
-      name: ``,
       password: ``,
     }
   }
 
-  addPrison = e => {
+  handleLogin = e => {
     e.preventDefault()
 
-    const { username, address, name, password } = this.state
+    const { username, password } = this.state
 
     axios
-      .post(`${API}/auth/register`, {
+      .post(`${API}/auth/login`, {
         username,
-        address,
-        name,
         password,
       })
       .then(({ data: { token } }) => localStorage.setItem(`token`, token))
       .catch(err => console.error(err.response))
+
     this.setState({
       username: ``,
-      address: ``,
-      name: ``,
       password: ``,
     })
   }
@@ -40,28 +35,14 @@ export default class Register extends Component {
   }
 
   render() {
-    const { username, address, name, password } = this.state
+    const { username, password } = this.state
     return (
-      <form onSubmit={this.addPrison}>
+      <form onSubmit={this.handleLogin}>
         <input
           name='username'
           type='text'
           placeholder='username'
           value={username}
-          onChange={this.handleChange}
-        />
-        <input
-          name='address'
-          type='text'
-          placeholder='address'
-          value={address}
-          onChange={this.handleChange}
-        />
-        <input
-          name='name'
-          type='text'
-          placeholder='name'
-          value={name}
           onChange={this.handleChange}
         />
         <input
@@ -71,7 +52,7 @@ export default class Register extends Component {
           value={password}
           onChange={this.handleChange}
         />
-        <button type='submit'>Register New Prison</button>
+        <button type='submit'>Login</button>
       </form>
     )
   }
